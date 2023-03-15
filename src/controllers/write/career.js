@@ -1,6 +1,8 @@
 'use strict';
 
+const fetch = require('node-fetch');
 // const { spawn } = require('child_process');
+
 const helpers = require('../helpers');
 const user = require('../../user');
 const db = require('../../database');
@@ -17,7 +19,16 @@ Career.register = async (req, res) => {
             gender: userData.gender,
         };
 
-        userCareerData.prediction = Math.random(); // TODO: Somehow call python script???
+        // Attempt to fetch prediction data
+        let response = await fetch('http://localhost:6000/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userCareerData)
+        })
+        response = await response.json();
+        userCareerData.prediction = response["job_candidate"];
 
         await user.setCareerData(req.uid, userCareerData);
         db.sortedSetAdd('users:career', req.uid, req.uid);
