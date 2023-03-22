@@ -85,3 +85,4 @@ theme/node_modules/
 
 # Microservice Ignore
 venv
+__pycache__

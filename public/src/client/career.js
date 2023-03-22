@@ -7,34 +7,20 @@ define('forum/career', [
     let validationError = false;
 
     Career.init = function () {
-        const name = $('#name');
-        const email = $('#email');
+        const student_id = $('#student_id');
         const age = $('#age');
+        const gpa = $('#gpa');
+        const num_programming_languages = $('#num_programming_languages');
+        const num_past_internships = $('#num_past_internships');
         const signup = $('#signup');
-
-        name.on('blur', function () {
-            if (name.val().length) {
-                validateName(name.val());
-            }
-        });
-
-        email.on('blur', function () {
-            if (email.val().length) {
-                validateEmail(email.val());
-            }
-        });
-
-        age.on('blur', function () {
-            if (age.val().length) {
-                validateAge(age.val());
-            }
-        });
 
         function validateForm(callback) {
             validationError = false;
-            validateName(name.val());
-            validateEmail(email.val());
-            validateAge(age.val());
+            validateNonEmpty(student_id.val(), $('#student-id-notify'));
+            validateRangedInt(age.val(), $('#age-notify'), 18, 25);
+            validateRangedFloat(gpa.val(), $('#gpa-notify'), 0.0, 4.0);
+            validateRangedInt(num_programming_languages.val(), $('#num-programming-languages-notify'), 1, 5);
+            validateRangedInt(num_past_internships.val(), $('#num-past-internships-notify'), 0, 4);
             callback();
         }
 
@@ -73,33 +59,35 @@ define('forum/career', [
         });
     };
 
-    function validateName(name) {
-        const name_notify = $('#name-notify');
-
-        if (!name || name.length === 0) {
-            showError(name_notify, 'Name must be non-empty');
+    function validateNonEmpty(value, value_notify) {
+        if (!value || value.length === 0) {
+            showError(value_notify, 'Must be non-empty');
         } else {
-            showSuccess(name_notify);
+            showSuccess(value_notify);
         }
     }
 
-    function validateEmail(email) {
-        const email_notify = $('#email-notify');
-
-        if (!email || email.length === 0) {
-            showError(email_notify, 'Email must be non-empty');
-        } else {
-            showSuccess(email_notify);
+    function validateRangedInt(value, value_notify, min_val, max_val) {
+        if (!value || isNaN(value)) {
+            showError(value_notify, `Must be a valid integer`);
+        }
+        else if (parseInt(value, 10) < min_val || parseInt(value, 10) > max_val) {
+            showError(value_notify, `Must be within the range [${min_val}, ${max_val}]`);
+        } 
+        else {
+            showSuccess(value_notify);
         }
     }
 
-    function validateAge(age) {
-        const age_notify = $('#age-notify');
-
-        if (!age || isNaN(age) || parseInt(age, 10) <= 0) {
-            showError(age_notify, 'Age must be a positive integer value');
-        } else {
-            showSuccess(age_notify);
+    function validateRangedFloat(value, value_notify, min_val, max_val) {
+        if (!value || isNaN(value)) {
+            showError(value_notify, `Must be a valid floating point value`);
+        }
+        else if (parseFloat(value) < min_val || parseFloat(value) > max_val) {
+            showError(value_notify, `Must be within the range [${min_val}, ${max_val}]`);
+        } 
+        else {
+            showSuccess(value_notify);
         }
     }
 

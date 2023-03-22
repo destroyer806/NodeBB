@@ -13,14 +13,18 @@ Career.register = async (req, res) => {
     const userData = req.body;
     try {
         const userCareerData = {
-            name: userData.name,
-            email: userData.email,
-            age: parseInt(userData.age, 10),
+            student_id: userData.student_id,
+            major: userData.major,
+            age: userData.age,
             gender: userData.gender,
+            gpa: userData.gpa,
+            extra_curricular: userData.extra_curricular,
+            num_programming_languages: userData.num_programming_languages,
+            num_past_internships: userData.num_past_internships,
         };
 
         // Attempt to fetch prediction data
-        let response = await fetch('http://localhost:6000/predict', {
+        let response = await fetch('http://localhost:8080/predict', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -28,7 +32,7 @@ Career.register = async (req, res) => {
             body: JSON.stringify(userCareerData)
         })
         response = await response.json();
-        userCareerData.prediction = response["job_candidate"];
+        userCareerData.prediction = response["good_employee"];
 
         await user.setCareerData(req.uid, userCareerData);
         db.sortedSetAdd('users:career', req.uid, req.uid);
