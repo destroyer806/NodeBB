@@ -1,6 +1,5 @@
 'use strict';
 
-// const { spawn } = require('child_process');
 const helpers = require('../helpers');
 const user = require('../../user');
 const db = require('../../database');
@@ -11,13 +10,17 @@ Career.register = async (req, res) => {
     const userData = req.body;
     try {
         const userCareerData = {
-            name: userData.name,
-            email: userData.email,
-            age: parseInt(userData.age, 10),
+            student_id: userData.student_id,
+            major: userData.major,
+            age: userData.age,
             gender: userData.gender,
+            gpa: userData.gpa,
+            extra_curricular: userData.extra_curricular,
+            num_programming_languages: userData.num_programming_languages,
+            num_past_internships: userData.num_past_internships,
         };
 
-        userCareerData.prediction = Math.random(); // TODO: Somehow call python script???
+        userCareerData.prediction = Math.round(Math.random()); // TODO: Somehow call model ???
 
         await user.setCareerData(req.uid, userCareerData);
         db.sortedSetAdd('users:career', req.uid, req.uid);
